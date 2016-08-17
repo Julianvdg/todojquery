@@ -18,7 +18,7 @@
             width: 500px;
             border: 1px solid #e6e6e6;
             border-radius: 3px;
-            padding:50px;
+            padding: 50px;
         }
         
         h1 {
@@ -29,7 +29,8 @@
             padding: 0 0 20px;
         }
         
-        input#new-todo {
+        input#new-todo,
+        input.live-search-box {
             display: block;
             width: 400px;
             border-radius: 3px;
@@ -93,11 +94,11 @@
     <div class="container">
         <h1>TodoList</h1>
 
-        <form>
+        <form id="addForm">
             <input type="text" id="new-todo" placeholder="What needs to be done?">
         </form>
 
-        <ul id="todolist">
+        <ul id="todolist" class="live-search-list">
             <li class="todo">
                 <input id="todo-1" type="checkbox" value="1">
                 <label for="todo-1">Sweep the floor</label>
@@ -113,6 +114,7 @@
         <div class="footer">
             Todo: <span id="todo-count">1</span> • Done: <span id="completed-count">0</span> • Total: <span id="total-count">1</span>
         </div>
+        <input type="text" class="live-search-box" placeholder="search here" />
     </div>
 
     <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
@@ -197,8 +199,40 @@
                 }
             }
 
+
+
+
+
+
+
             $("input[type=checkbox]").bind('change', toggleDone);
-            $("form").bind('submit', submitTodo);
+            $("#addForm").bind('submit', submitTodo);
+
+
+        });
+
+
+        $( ".live-search-box" ).focus(function() { 
+
+            $('.live-search-list li').each(function() {
+                $(this).attr('data-search-term', $(this).text().toLowerCase());
+            });
+
+            $('.live-search-box').on('keyup', function() {
+
+                var searchTerm = $(this).val().toLowerCase();
+
+                $('.live-search-list li').each(function() {
+
+                    if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+
+                });
+
+            });
 
         });
     </script>
